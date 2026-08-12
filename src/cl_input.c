@@ -21,6 +21,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "input.h"
 #include "pmove.h"		// PM_FLY etc
 #include "rulesets.h"
+#include "aimbot.h"
 
 static void IN_AttackUp_CommonHide(void);
 
@@ -1091,6 +1092,9 @@ void CL_SendCmd(void)
 		IN_Move(cmd);
 	}
 
+	// Apply assisted aiming after normal input and before angles enter the user command.
+	Aimbot_Frame();
+
 	// if we are spectator, try autocam
 	if (cl.spectator) {
 		Cam_Track(cmd);
@@ -1235,6 +1239,7 @@ void CL_SendCmd(void)
 
 void CL_InitInput(void)
 {
+	Aimbot_Init();
 	Cmd_AddCommand("+moveup", IN_UpDown);
 	Cmd_AddCommand("-moveup", IN_UpUp);
 	Cmd_AddCommand("+movedown", IN_DownDown);
