@@ -580,6 +580,7 @@ add_resources(documentation
 )
 
 set(client_headers
+		${SOURCE_DIR}/aimbot.h
         ${SOURCE_DIR}/Ctrl.h
         ${SOURCE_DIR}/Ctrl_EditBox.h
         ${SOURCE_DIR}/Ctrl_PageViewer.h
@@ -649,6 +650,7 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
     list(APPEND client_headers ${SOURCE_DIR}/movie_avi.h)
 endif()
 set(client
+		${SOURCE_DIR}/aimbot.c
         ${SOURCE_DIR}/Ctrl.c
         ${SOURCE_DIR}/Ctrl_EditBox.c
         ${SOURCE_DIR}/Ctrl_PageViewer.c
