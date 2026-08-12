@@ -19,21 +19,6 @@ if ($LASTEXITCODE -ne 0) {
     exit 1
 }
 
-# Some source distributions contain .gitmodules but omit the qwprot gitlink,
-# which makes `git submodule update` succeed without creating this directory.
-# CMake requires qwprot/src/protocol.h, so recover the dependency explicitly.
-if (-not (Test-Path "src/qwprot/src/protocol.h" -PathType Leaf)) {
-    if (Test-Path "src/qwprot") {
-        Remove-Item -Recurse -Force "src/qwprot"
-    }
-
-    git clone --branch master --depth 1 https://github.com/QW-Group/qwprot.git "src/qwprot"
-    if ($LASTEXITCODE -ne 0 -or -not (Test-Path "src/qwprot/src/protocol.h" -PathType Leaf)) {
-        Show-MessageBox "Checkout of the required qwprot protocol headers failed. Check the Git output above."
-        exit 1
-    }
-}
-
 if (-not (Test-Path "vcpkg/.git")) {
     if (-not (Test-Path "version.json")) {
         Show-MessageBox "Unable to checkout correct version of vcpkg without 'version.json'."

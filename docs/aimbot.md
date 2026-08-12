@@ -24,12 +24,6 @@ If an older checkout reports `Unable to checkout correct version of vcpkg withou
 `bootstrap.ps1`. If a failed attempt left a partial `vcpkg` directory, remove that directory
 and run `powershell -File bootstrap.ps1` again.
 
-The bootstrap also initializes the `src/qwprot` protocol-header dependency. If CMake reports
-that `src/qwprot/src/protocol.h` is missing, rerun `bootstrap.ps1`; do not continue directly
-to `cmake --build`, because CMake did not generate a usable Visual Studio project. Current
-bootstrap versions recover this dependency even from source distributions whose Git
-submodule metadata is incomplete.
-
 The normal 64-bit Windows executable is produced under
 `build-msbuild-x64/Release/ezquake.exe`. The supported cross-build flow is:
 
