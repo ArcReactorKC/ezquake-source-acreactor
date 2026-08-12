@@ -2,6 +2,14 @@ cmake_minimum_required(VERSION 3.22)
 
 project(ezquake C)
 
+# Fail before dependency discovery (which can take a long time with vcpkg) when
+# a source archive omitted the qwprot submodule contents.
+if(NOT EXISTS "${PROJECT_SOURCE_DIR}/src/qwprot/src/protocol.h")
+    message(FATAL_ERROR
+        "Missing src/qwprot/src/protocol.h. Run bootstrap.ps1 on Windows "
+        "or bootstrap.sh on Unix before configuring CMake.")
+endif()
+
 if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
     enable_language(OBJC)
 endif()
@@ -157,6 +165,7 @@ set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 set_property(GLOBAL PROPERTY VS_STARTUP_PROJECT "ezquake")
 
 set(SOURCE_DIR ${PROJECT_SOURCE_DIR}/src)
+set(QWPROT_SOURCE_DIR ${SOURCE_DIR}/qwprot/src)
 
 set(common_headers
         ${SOURCE_DIR}/bspfile.h
@@ -220,7 +229,6 @@ set(common
 source_group(TREE ${SOURCE_DIR} PREFIX "Source Files/common" FILES ${common})
 source_group(TREE ${SOURCE_DIR} PREFIX "Header Files/common" FILES ${common_headers})
 
-set(QWPROT_SOURCE_DIR ${SOURCE_DIR}/qwprot/src)
 set(qwprot_headers
         ${QWPROT_SOURCE_DIR}/protocol.h
 )
@@ -580,6 +588,7 @@ add_resources(documentation
 )
 
 set(client_headers
+		${SOURCE_DIR}/aimbot.h
         ${SOURCE_DIR}/Ctrl.h
         ${SOURCE_DIR}/Ctrl_EditBox.h
         ${SOURCE_DIR}/Ctrl_PageViewer.h
@@ -649,6 +658,7 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
     list(APPEND client_headers ${SOURCE_DIR}/movie_avi.h)
 endif()
 set(client
+		${SOURCE_DIR}/aimbot.c
         ${SOURCE_DIR}/Ctrl.c
         ${SOURCE_DIR}/Ctrl_EditBox.c
         ${SOURCE_DIR}/Ctrl_PageViewer.c

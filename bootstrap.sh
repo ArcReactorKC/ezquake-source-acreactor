@@ -28,6 +28,17 @@ if [ -e ".git" ]; then
     git submodule update --init --recursive
 fi
 
+# Some source distributions contain .gitmodules but omit the qwprot gitlink,
+# so submodule update succeeds without providing the required protocol header.
+if [ ! -f "src/qwprot/src/protocol.h" ]; then
+    rm -rf "src/qwprot"
+    echo "Checking out qwprot..."
+    git clone --branch master --depth 1 https://github.com/QW-Group/qwprot.git "src/qwprot"
+    if [ ! -f "src/qwprot/src/protocol.h" ]; then
+        show_error "Checkout of the required qwprot protocol headers failed."
+    fi
+fi
+
 if [ ! -e "vcpkg/.git" ]; then
     if [ ! -f "version.json" ]; then
         show_error "Unable to checkout vcpkg without 'version.json'."
