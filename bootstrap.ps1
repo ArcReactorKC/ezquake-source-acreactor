@@ -4,12 +4,20 @@ function Show-MessageBox {
     [System.Windows.MessageBox]::Show($message, "Bootstrap Error", 'OK', 'Warning')
 }
 
+# Resolve repository-relative files from the script directory.  PowerShell's
+# current directory belongs to the caller and is not changed by -File.
+Set-Location -LiteralPath $PSScriptRoot
+
 if (-not (Get-Command git -ErrorAction SilentlyContinue)) {
     Show-MessageBox "Git is needed to checkout vcpkg, but it's not installed or not available in PATH."
     exit 1
 }
 
 git submodule update --init --recursive
+if ($LASTEXITCODE -ne 0) {
+    Show-MessageBox "Unable to initialize the source submodules. Check the Git output above."
+    exit 1
+}
 
 if (-not (Test-Path "vcpkg/.git")) {
     if (-not (Test-Path "version.json")) {
@@ -25,6 +33,10 @@ if (-not (Test-Path "vcpkg/.git")) {
     }
 
     $vcpkgVersion = $versionData.vcpkg
+    if ([string]::IsNullOrWhiteSpace($vcpkgVersion)) {
+        Show-MessageBox "version.json does not contain a valid 'vcpkg' version."
+        exit 1
+    }
 
     if (Test-Path "vcpkg") {
         Remove-Item -Recurse -Force "vcpkg"
@@ -40,3 +52,7 @@ if (-not (Test-Path "vcpkg/.git")) {
 }
 
 & "vcpkg/bootstrap-vcpkg.bat" -disableMetrics
+if ($LASTEXITCODE -ne 0) {
+    Show-MessageBox "vcpkg bootstrap failed. Check the console output above."
+    exit 1
+}

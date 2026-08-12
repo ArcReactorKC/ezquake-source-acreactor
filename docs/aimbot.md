@@ -15,6 +15,15 @@ cmake --preset msbuild-x64
 cmake --build --preset msbuild-x64-release
 ```
 
+`bootstrap.ps1` may be launched from any working directory; it resolves `version.json` and
+the `vcpkg` checkout relative to its own repository location. The repository pins vcpkg to
+`2025.06.13`, so bootstrap does not depend on whichever revision happens to be current.
+
+If an older checkout reports `Unable to checkout correct version of vcpkg without
+'version.json'`, update the checkout and confirm that `version.json` exists next to
+`bootstrap.ps1`. If a failed attempt left a partial `vcpkg` directory, remove that directory
+and run `powershell -File bootstrap.ps1` again.
+
 The normal 64-bit Windows executable is produced under
 `build-msbuild-x64/Release/ezquake.exe`. The supported cross-build flow is:
 
