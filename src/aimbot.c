@@ -89,11 +89,11 @@ static qbool Aimbot_Visible(vec3_t source, vec3_t target)
 static qbool Aimbot_Intercept(vec3_t source, vec3_t target, vec3_t velocity, vec3_t result, float *lead_time)
 {
 	vec3_t relative, scaled_velocity;
-	float scale = bound(0.0f, aimbot_prediction_scale.value, 2.0f);
+	float pred_scale = bound(0.0f, aimbot_prediction_scale.value, 2.0f);
 	float a, b, c, discriminant, t;
 
 	VectorSubtract(target, source, relative);
-	VectorScale(velocity, scale, scaled_velocity);
+	VectorScale(velocity, pred_scale, scaled_velocity);
 	a = DotProduct(scaled_velocity, scaled_velocity) - AIMBOT_ROCKET_SPEED * AIMBOT_ROCKET_SPEED;
 	b = 2.0f * DotProduct(relative, scaled_velocity);
 	c = DotProduct(relative, relative);
